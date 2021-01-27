@@ -12,22 +12,31 @@ usage() {
     exit 1
 }
 
-while getopts ':h' option; do
-    case "$option" in
-        h) usage;;
-        \?) printf "illegal option: -%s\n" "$OPTARG" >&2; usage;;
+ROOT=.
+N=0
+
+for option in "$@"
+do
+    case $option in
+        -h|--help) usage;;
+        -n=*|--n=*) N=${option#*=}; shift;;
+        -n|--n) N=$2; shift; shift;;
+        -*|--*|\?) printf "illegal option: %s\n\n" "$option" >&2; usage;;
     esac
 done
 
-if [ $OPTIND -gt 1 ]; then shift $((OPTIND - 1)); fi
-if [ $# -gt 1 ]; then usage; fi
+if [ $# -gt 1 ]; then
+    usage
+elif [ ! -z "$1" ]; then
+    ROOT=$1
+fi
 
-#
+##
 
-if [ ! -z "$1" ]; then
-	du -h -d0 $1/* | sort -hr
+if [ "$N" -eq "0" ]; then
+    du -h -d0 $ROOT/* | sort -hr
 else
-	du -h -d0 ./* | sort -hr
+    du -h -d0 $ROOT/* | sort -hr | head -n $N
 fi
 
 exit $?
