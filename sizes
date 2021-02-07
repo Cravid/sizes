@@ -3,6 +3,7 @@ usage="$(basename "$0") OPTIONS [path] -- display ordered directory sizes
 
 OPTIONS:
     -h          Show this help message
+    -n x	Only show first x rows
 
 FUNCTION:
     path        Directory path to use as root dir, default current directory
